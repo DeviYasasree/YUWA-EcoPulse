@@ -28,20 +28,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(TOKEN_KEY);
-    if (!stored) {
-      setLoading(false);
-      return;
-    }
-    api<User>("/auth/me", { token: stored })
-      .then((current) => {
+    let cancelled = false;
+
+    async function restoreSession() {
+      const stored = window.localStorage.getItem(TOKEN_KEY);
+      if (!stored) return;
+      try {
+        const current = await api<User>("/auth/me", { token: stored });
+        if (cancelled) return;
         setToken(stored);
         setUser(current);
-      })
-      .catch(() => {
+      } catch {
         window.localStorage.removeItem(TOKEN_KEY);
-      })
-      .finally(() => setLoading(false));
+      }
+    }
+
+    void restoreSession().finally(() => {
+      if (!cancelled) setLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const value = useMemo<AuthContextValue>(

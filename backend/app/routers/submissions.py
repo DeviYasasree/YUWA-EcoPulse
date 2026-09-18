@@ -12,6 +12,25 @@ from app.services.ai import analyze_submission
 
 router = APIRouter(prefix="/submissions", tags=["submissions"])
 
+LEGACY_DEMO_PHOTO_URLS = {
+    "https://images.unsplash.com/photo-1618477461853-cf6b80e1f6d3",
+    "https://example.com/photo.jpg",
+    "http://example.com/photo.jpg",
+}
+STABLE_DEMO_PHOTO_URL = (
+    "https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=1200&q=80"
+)
+
+
+def normalize_photo_url(url: str | None) -> str | None:
+    """Map known-broken demo evidence URLs to a stable public cleanup photo."""
+    if not url:
+        return url
+    stripped = url.strip()
+    if stripped.rstrip("/") in LEGACY_DEMO_PHOTO_URLS:
+        return STABLE_DEMO_PHOTO_URL
+    return stripped
+
 
 def serialize(submission: Submission) -> SubmissionOut:
     return SubmissionOut(
@@ -25,7 +44,7 @@ def serialize(submission: Submission) -> SubmissionOut:
         title=submission.title,
         description=submission.description,
         location=submission.location,
-        photo_url=submission.photo_url,
+        photo_url=normalize_photo_url(submission.photo_url),
         waste_collected_kg=submission.waste_collected_kg,
         participants_count=submission.participants_count,
         awarded_points=submission.awarded_points,
@@ -61,7 +80,7 @@ def create_submission(
         title=payload.title,
         description=payload.description,
         location=payload.location,
-        photo_url=payload.photo_url,
+        photo_url=normalize_photo_url(payload.photo_url),
         waste_collected_kg=payload.waste_collected_kg,
         participants_count=payload.participants_count,
         awarded_points=0,

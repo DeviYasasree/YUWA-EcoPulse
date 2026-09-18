@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 import { AppShell } from "@/components/app-shell";
+import { EvidenceImage } from "@/components/evidence-image";
 import { EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { StatusBadge } from "@/components/status-badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -71,6 +72,7 @@ function SubmissionsList() {
                   <p className="text-sm text-muted-foreground">
                     Official points: {submission.status === "APPROVED" ? submission.awarded_points : 0}
                   </p>
+                  <EvidenceImage src={submission.photo_url} alt={`Evidence for ${submission.title}`} />
                 </CardContent>
               </Card>
             ))}

@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { EvidenceImage } from "@/components/evidence-image";
 import { ErrorState, LoadingState } from "@/components/states";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -95,10 +96,7 @@ export default function EvaluatorReviewPage() {
                   <p className="text-muted-foreground">Location: {submission.location || "Not provided"}</p>
                   <p className="text-muted-foreground">Waste: {submission.waste_collected_kg ?? 0} kg</p>
                   <p className="text-muted-foreground">Volunteers: {submission.participants_count ?? 0}</p>
-                  {submission.photo_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={submission.photo_url} alt="Submitted evidence" className="max-h-72 rounded-md border border-border object-cover" />
-                  ) : null}
+                  <EvidenceImage src={submission.photo_url} alt="Submitted evidence" />
                 </CardContent>
               </Card>
             </>

@@ -4,11 +4,13 @@ import { FormEvent, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { EvidenceImage } from "@/components/evidence-image";
 import { ErrorState, LoadingState } from "@/components/states";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { api, ApiError, type Challenge, type Submission } from "@/lib/api";
+import { DEMO_CLEANUP_EVIDENCE_URL } from "@/lib/evidence";
 import { useRequireAuth } from "@/lib/auth";
 
 export default function SubmitEvidencePage() {
@@ -23,7 +25,7 @@ export default function SubmitEvidencePage() {
     description:
       "Our student team collected plastic bottles, wrappers, and paper waste around the main campus gate and cycling track. Volunteers sorted recyclables before disposal.",
     location: "YUWA campus, main gate",
-    photo_url: "https://images.unsplash.com/photo-1618477461853-cf6b80e1f6d3",
+    photo_url: DEMO_CLEANUP_EVIDENCE_URL,
     waste_collected_kg: "18.5",
     participants_count: "12",
   });
@@ -107,13 +109,14 @@ export default function SubmitEvidencePage() {
                     onChange={(e) => setForm({ ...form, location: e.target.value })}
                   />
                 </div>
-                <div className="space-y-1.5">
+                <div className="space-y-1.5 sm:col-span-2">
                   <Label htmlFor="photo">Photo URL</Label>
                   <Input
                     id="photo"
                     value={form.photo_url}
                     onChange={(e) => setForm({ ...form, photo_url: e.target.value })}
                   />
+                  <EvidenceImage src={form.photo_url} alt="Evidence photo preview" />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="waste">Waste collected (kg)</Label>
